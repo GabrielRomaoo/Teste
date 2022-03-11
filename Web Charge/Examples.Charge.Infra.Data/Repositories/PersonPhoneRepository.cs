@@ -16,6 +16,23 @@ namespace Examples.Charge.Infra.Data.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        public void Create(PersonPhone personPhone)
+        {
+            _context.AddAsync(personPhone);
+            _context.SaveChanges();
+        }
+
+        public void Delete(PersonPhone personPhone)
+        {
+            _context.Remove(personPhone);
+            _context.SaveChanges();
+        }
+
         public async Task<IEnumerable<PersonPhone>> FindAllAsync() => await Task.Run(() => _context.PersonPhone);
+
+        public void Update(PersonPhone personPhone)
+        {
+            _context.Entry(personPhone).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        }
     }
 }

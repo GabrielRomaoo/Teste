@@ -4,6 +4,7 @@ using Examples.Charge.Application.Interfaces;
 using Examples.Charge.Application.Messages.Request;
 using Examples.Charge.Application.Messages.Response;
 using System.Threading.Tasks;
+using System;
 
 namespace Examples.Charge.API.Controllers
 {
@@ -11,26 +12,59 @@ namespace Examples.Charge.API.Controllers
     [ApiController]
     public class ExampleController : BaseController
     {
-        private IExampleFacade _facade;
+        private IPersonPhoneFacade _facade;
 
-        public ExampleController(IExampleFacade facade, IMapper mapper)
+        public ExampleController(IPersonPhoneFacade facade, IMapper mapper)
         {
             _facade = facade;
         }
-
-        [HttpGet]
-        public async Task<ActionResult<ExampleListResponse>> Get() => Response(await _facade.FindAllAsync());
-
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+                
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody ]CreatePersonPhoneRequest request)
         {
-            return Response(null);
+            try
+            {
+                var result = await _facade.CreatePersonPhone(request);
+
+                return Response(result);
+            }
+            catch(Exception e)
+            {
+                var response = new CreatePersonPhoneResponse { Message = e.Message };
+                return Response(response);
+            }
         }
 
-        [HttpPost]
-        public IActionResult Post([FromBody] ExampleRequest request)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] DeletePersonPhoneRequest request)
         {
-            return Response(0, null);
+            try
+            {
+                var result = await _facade.DeletePersonPhone(request);
+
+                return Ok(Response(result));
+            }
+            catch (Exception e)
+            {
+                var response = new CreatePersonPhoneResponse { Message = e.Message };
+                return BadRequest(Response(response));
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdatePersonPhoneRequest request)
+        {
+            try
+            {
+                var result = await _facade.UpdatePersonPhone(request);
+
+                return Ok(Response(result));
+            }
+            catch (Exception e)
+            {
+                var response = new CreatePersonPhoneResponse { Message = e.Message };
+                return BadRequest(Response(response));
+            }
         }
     }
 }
